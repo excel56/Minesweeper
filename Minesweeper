@@ -1,0 +1,160 @@
+Public size
+Public mines
+Public begin
+Public score(5)
+
+'clears the board
+Sub clearBoard()
+  Cells.select
+  Selection.ClearContents
+  Selection.Boarders(xlDiagonalDown).LineStyle = xlNone
+  Selection.Boarders(xlDiagonalUp).LineStyle = xlNone
+  Selection.Boarders(xlEdgeLeft).LineStyle = xlNone
+  Selection.Boarders(xlEdgeTop).LineStyle = xlNone
+  Selection.Boarders(xlEdgeBottom).LineStyle = xlNone
+  Selection.Boarders(xlEdgeRight).LineStyle = xlNone
+  Selection.Boarders(xlInsideVertical).LineStyle = xlNone
+  Selection.Boarders(xlInsideHorizontal).LineStyle = xlNone
+  ActiveSheet.buttons.Delete
+End Sub
+
+'Creates the boarder based on the size variable
+Function createBoard(size)
+  'adds "x" to left and right
+  For i = 1 To size + 2
+    Cells(i, 2) = "x" 'left
+    Cells(i, size + 3) = "x" 'right
+  Next i
+  'adds "x" to top and bottom
+  For j = 2 To size + 2
+    Cells(1, j) = "x" 'top
+    Cells(size + 2, j) = "x" 'bottom
+  Next j 
+  
+  Range("C2:" & Cells(size + 1, size + 2).Address).Select
+  With Selection.Boarders(xlEdgeLeft)
+    .LineStyle = xlContinuous
+    .ColorIndex = 0
+    .TintAndShade = 0
+    .Weight = xlMedium
+  End With
+  With Selection.Boarders(xlEdgeTop)
+    .LineStyle = xlContinuous
+    .ColorIndex = 0
+    .TintAndShade = 0
+    .Weight = xlMedium
+  End With
+  With Selection.Boarders(xlEdgeBottom)
+    .LineStyle = xlContinuous
+    .ColorIndex = 0
+    .TintAndShade = 0
+    .Weight = xlMedium
+  End With
+  With Selection.Boarders(xlEdgeRight)
+    .LineStyle = xlContinuous
+    .ColorIndex = 0
+    .TintAndShade = 0
+    .Weight = xlMedium
+  End With
+  With Selection.Boarders(xlInsideVertical)
+    .LineStyle = xlContinuous
+    .ColorIndex = 0
+    .TintAndShade = 0
+    .Weight = xlMedium
+  End With
+  With Selection.Boarders(xlInsideHorizontal)
+    .LineStyle = xlContinuous
+    .ColorIndex = 0
+    .TintAndShade = 0
+    .Weight = xlMedium
+  End With
+End Function
+
+'adds mines to the board
+Function addMines(size, mines)
+  'generates 2 random numbers within the grid and adds a mine
+  For i = - to mines - 1
+    Randomize
+    x = Int(((size + 1) - 2 + 1) * Rnd + 2)
+    y = Int(((size + 2) - 3 + 1) * Rnd + 3)
+    'if a mine is already in this spot picks a new spot
+    If Cells(x, y) = "M" Then
+      x2 = Int(((size + 1) - 2 + 1) * Rnd + 2)
+      y2 = Int(((size + 2) - 3 + 1) * Rnd + 3)
+      If Cells(x2, y2) = "M" Then
+        x3 = Int(((size + 1) - 2 + 1) * Rnd + 2)
+        y3 = Int(((size + 2) - 3 + 1) * Rnd + 3)
+        If Cells(x3, y3) = "M" Then
+          x4 = Int(((size + 1) - 2 + 1) * Rnd + 2)
+          y4 = Int(((size + 2) - 3 + 1) * Rnd + 3)
+        Else 
+          Cells(x3, y3) = "M"
+        End If
+      Else 
+        Cells(x2, y2) = "M"
+      End If
+    Else 
+      Cells(x, y) = "M"
+    End If
+  Next i
+End Function
+
+'adds the numbers to the board
+Funtion numbers(size)
+  Dim cellNum As Variant, L As Integer
+  'iterates over each cell
+  For i = 2 To size + 1
+    For j = 3 To size + 2
+      cellNum = 0
+      'checks for mines on all surrounding spaces
+      If Cells(i, j) <> "M" Then
+        If Cells(i - 1, j - 1) = "M" Then
+          cellNum = 1
+        End If
+        If Cells(i - 1, j) = "M" Then
+          cellNum = 1 + cellNum
+        End If
+        If Cells(i - 1, j + 1) = "M" Then
+          cellNum = 1 + cellNum
+        End If
+        If Cells(i, j - 1) = "M" Then
+          cellNum = 1 + cellNum
+        End If
+        If Cells(i, j + 1) = "M" Then
+          cellNum = 1 + cellNum
+        End If
+        If Cells(i + 1, j + 1) = "M" Then
+          cellNum = 1 + cellNum
+        End If
+        If Cells(i + 1, j) = "M" Then
+          cellNum = 1 + cellNum
+        End If
+        If Cells(i + 1, j - 1) = "M" Then
+          cellNum = 1 + cellNum
+        End If
+        If cellNum = 0 Then
+          Cells(i, j) = "o"
+        Else
+          Cells(i, j) = "M"
+        End If
+      Next j
+    Next i
+  End Function
+  
+  'Centers text on the board
+  Function format()
+    Cells.Select
+    With Selection
+      .HorizontalAlignment = xlCenter
+      .VerticalAlignment = xlCenter
+    End With
+    Cells(1, 1).select
+  End Function
+  
+  'Creates the buttons
+  Function buttons(size)
+    Dim btn As Button
+    Dim t As Range
+    'run through the entire board
+    
+      
